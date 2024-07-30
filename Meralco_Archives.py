@@ -4,7 +4,7 @@ from datetime import date
 import os
 
 # Load the Excel file
-file_path = 'C:/Users/MARK/Meralco History Rates/Meralco History Rates Py/Historical MERALCO Schedule of Rates.xlsx'
+file_path = 'C:/Users/MARK/Meralco-Archive-Rates-Dashboard/Historical MERALCO Schedule of Rates reordered columns.xlsx'
 df = pd.read_excel(file_path, engine='openpyxl')
 
 # Streamlit application
@@ -82,6 +82,12 @@ if len(requested_dates) == 2:
 
         if st.button("Submit"):
             if not df_period.empty:
+                # Format 'Supply Period' column
+                df_period['Supply Period'] = df_period['Supply Period'].dt.strftime('%b-%y')
+                
+                # Sort by 'Supply Period'
+                df_period = df_period.sort_values(by='Supply Period', key=pd.to_datetime)
+
                 st.session_state['filtered_df'] = df_period
                 st.write("Filtered Data", df_period[['Customer Class', 'Customer Subclass', 'Supply Period', 'Supply Period Start', 'Supply Period End', 'Generation Charge kWh', 'Transmission Charge kWh', 'Distribution Charge kWh', 'Transmission Charge kW', 'Distribution Charge kW', 'Total per kW']])
                 
